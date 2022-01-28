@@ -9,22 +9,38 @@ function App() {
   // set state for input fields
   const [firstName, setfirstName] = useState('');
   const [lastName, setlastName] = useState('');
+  const baseUrl = 'http;//localhost:4000';
 
   //fetch guest list from server, runs once
   useEffect(() => {
     const getList = async () => {
-      const response = await fetch();
-      // ,
-      const data = await response.json();
-      setList(data);
+      const response = await fetch(`${baseUrl}/guests`);
+      const allGuests = await response.json();
+      console.log(allGuests.results);
+      setList(allGuests.results);
     };
 
     getList();
   }, []);
+  // create new guest
+  useEffect(() => {
+    const response = await fetch(`${baseUrl}/guests`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ firstName: '', lastName: '' }),
+    });
+    const createdGuest = await response.json();
+  });
 
   //when Submit button is clicked:
   // const handleSubmit = (e: ) => {
   //   e.preventDefault();
+
+  if (userList.length === 0) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <>
@@ -37,8 +53,14 @@ function App() {
         <IsAttending />
 
         <form>
-          <input></input>
-          <input></input>
+          <div>
+            <label for="firstName">First name</label>
+            <input type="text" name="firstName" id="firstName" required></input>
+          </div>
+          <div>
+            <label for="lastName">Last name </label>
+            <input type="text" name="lastName" id="lastName" required></input>
+          </div>
         </form>
       </body>
     </>
